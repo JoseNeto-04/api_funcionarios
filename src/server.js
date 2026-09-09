@@ -96,6 +96,88 @@ app.get('/funcionarios/:id', (req, res)=>{
         )
     })
 
+    app.put('/funcionarios/:id', (req, res)=>{
+
+        const {id} = req.params
+        const {nome, cargo, salario} = req.body
+
+        database.query('UPDATE tb_funcionarios SET nome = ?, cargo = ?, salario = ? WHERE ID = ?',
+            
+            [nome, cargo, salario, id],
+            (error, results)=>{
+
+                if(error) {
+
+                    return res.status(500).json({
+
+                        erro: 'Erro ao atualizar funcionario'
+
+                    })
+                    
+                }
+
+                if(results.affectedRows == 0) {
+
+                    return res.status(404).json({
+
+                        erro: 'Funcionario nao encontrado'
+
+                    })
+
+                }
+
+                res.json({
+
+                    mensagem: 'Funcionarios atualizado com sucesso'
+
+                })
+
+            }   
+
+            
+        )
+
+
+    })
+
+    app.delete('/funcionarios/:id', (req, res)=>{
+
+        const {id} = req.params
+
+        database.query('DELETE FROM tb_funcionarios WHERE id = ?',
+
+            [id],
+            (error, results) => {
+
+                if(error) {
+
+                    return res.status(500).json({
+
+                        erro: 'Erro ao excluir funcionario'
+
+                    })
+
+                }
+                
+                if(results.affectedRows == 0) {
+
+                    res.status(404).json({
+
+                        erro: 'Erro ao encontrar funcionario'
+
+                    })
+
+                }
+
+                res.json({
+
+                    mensagem: 'Funcionarios excluido com sucesso'
+                })
+            }
+        )
+
+    })
+
 
 app.listen(3000,()=>{
 
